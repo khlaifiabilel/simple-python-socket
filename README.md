@@ -1,22 +1,73 @@
-![](https://miro.medium.com/max/812/0*xAADmPJN52Yy6XJV.jpg)
+# Simple Python Socket
 
-# Simple-python-socket
+A small educational TCP chat experiment with a threaded server and terminal
+client. The server accepts multiple connections and broadcasts each received
+message to every other connected client.
 
-A server client socket program using python
+## Current status
 
-<img alt="GitHub followers" src="https://img.shields.io/github/followers/kalifiabillal?color=yellow&label=kalifiabillal&style=for-the-badge">   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/kalifiabillal/Android-Arduino-Automotive?style=for-the-badge">   <img alt="Visual Studio App Center (Minimum) OS Version" src="https://img.shields.io/visual-studio-app-center/releases/osver/kalifiabillal/Android-Arduino-Automotive/a87b9e745655355612fff4418953e0c3f7074250?style=for-the-badge">   <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/Kalifiabillal/Android-Arduino-Automotive?color=green&style=for-the-badge">   <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/kalifiabillal/Android-Arduino-Automotive?style=for-the-badge">
+The server is a runnable Python 3 example. The checked-in client is **not
+currently runnable**: two indented Git configuration lines at the end of
+`client.py` cause an `IndentationError`. The client also imports PyCryptodome
+but does not encrypt network messages. This README documents the repository as
+it exists; it does not claim secure messaging or a passing end-to-end demo.
 
-## What is a socket ?
-A socket is one endpoint of a two-way communication link between two programs running on the network. A socket is bound to a port number so that the TCP layer can identify the application that data is destined to be sent to. An endpoint is a combination of an IP address and a port number.
+## Protocol and behavior
 
-## What is the function of a socket?
-The socket() function shall create an unbound socket in a communications domain, and return a file descriptor that can be used in later function calls that operate on sockets. The socket() function takes the following arguments: domain. Specifies the communications domain in which a socket is to be created.
+- IPv4 TCP sockets with a host and port entered interactively
+- One server thread per accepted client
+- Messages read in chunks of at most 32 bytes
+- Broadcast to peers, excluding the sender
+- Plain UTF-8 terminal input with no framing, authentication, or encryption
 
-## What is socket and its types?
-Socket types define the communication properties visible to a user. The Internet family sockets provide access to the TCP/IP transport protocols. Datagram sockets allow processes to use UDP to communicate. ... A datagram socket supports bidirectional flow of messages.
+TCP is a byte stream, so a single `recv(32)` call is not guaranteed to equal one
+complete user message. Longer input can be split across reads.
 
-## How socket is created?
-A socket is created with no name. A remote process has no way to refer to a socket until an address is bound to the socket. Processes that communicate are connected through addresses. In the Internet family, a connection is composed of local and remote addresses and local and remote ports.
+## Local usage
 
-## Can you send and receive on the same socket?
-Once connected, a TCP socket can only send and receive to/from the remote machine. This means that you'll need one TCP socket for each client in your application. UDP is not connection-based, you can send and receive to/from anyone at any time with the same socket.
+No dependency is needed to start the server:
+
+```bash
+git clone https://github.com/khlaifiabilel/Simple-python-socket.git
+cd Simple-python-socket
+python3 server.py
+```
+
+For a same-machine test, enter `127.0.0.1` and an unused unprivileged port such
+as `5000`. The client cannot be started until its syntax error is corrected in a
+separate code change. If that is done, its unused `Crypto` imports require the
+third-party `pycryptodome` package, which is not declared in this repository.
+
+Do not expose this server to the public internet. Bind to `127.0.0.1` for local
+experiments; binding to `0.0.0.0` accepts traffic on every network interface.
+
+## Syntax checks
+
+```bash
+python3 -m py_compile server.py
+python3 -m py_compile client.py
+```
+
+The first command should pass. The second intentionally reports the current
+`IndentationError`, making the limitation reproducible.
+
+## Configuration and security
+
+There are no configuration files, credentials, or persistent data. Host and
+port are prompted at runtime. Messages are plaintext, clients are unauthenticated,
+input is unbounded at the protocol level, and broad exception handlers hide
+specific network failures. The SHA-256 object in `client.py` does not protect
+messages, and AES is imported but never used.
+
+## Provenance
+
+The repository history begins with a commit by `kalifiabillal` on 2021-01-29
+and contains a later peer-to-peer experiment branch merged on 2021-02-05. No
+upstream source or third-party code notice is recorded in the files or Git
+history.
+
+## License
+
+No license file is present. The absence of a license means no general permission
+to copy, modify, or redistribute the code is granted. Python and PyCryptodome
+have their own separate licenses.
