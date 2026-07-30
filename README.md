@@ -28,8 +28,8 @@ complete user message. Longer input can be split across reads.
 No dependency is needed to start the server:
 
 ```bash
-git clone https://github.com/khlaifiabilel/Simple-python-socket.git
-cd Simple-python-socket
+git clone https://github.com/khlaifiabilel/simple-python-socket.git
+cd simple-python-socket
 python3 server.py
 ```
 
