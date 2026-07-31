@@ -68,6 +68,6 @@ history.
 
 ## License
 
-No license file is present. The absence of a license means no general permission
-to copy, modify, or redistribute the code is granted. Python and PyCryptodome
-have their own separate licenses.
+The project is available under the MIT License; see [`LICENSE`](LICENSE).
+PyCryptodome is a third-party dependency with its own license and is not covered
+by this repository's license.
